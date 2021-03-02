@@ -18,7 +18,7 @@ export class TodosService {
     return this.todosRepository.findOne(id);
   }
 
-  async create(
+  create(
     title: string,
     sprintTotal: number,
     sprintDone: number,
@@ -30,7 +30,7 @@ export class TodosService {
       sprintDone,
       todoDone,
     });
-    return await this.todosRepository.save(newTodo);
+    return this.todosRepository.save(newTodo);
   }
 
   async remove(id: string): Promise<void> {

@@ -13,13 +13,8 @@ export class TodosController {
   }
 
   @Post()
-  async create(@Body() createTodoDto: CreateTodoDTO): Promise<Todo> {
+  create(@Body() createTodoDto: CreateTodoDTO): Promise<Todo> {
     const { title, sprintTotal, sprintDone, todoDone } = createTodoDto;
-    return await this.todosService.create(
-      title,
-      sprintTotal,
-      sprintDone,
-      todoDone,
-    );
+    return this.todosService.create(title, sprintTotal, sprintDone, todoDone);
   }
 }
