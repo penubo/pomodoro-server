@@ -1,5 +1,4 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
-import { UpdateResult } from 'typeorm';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreateTodoDTO } from './dto/create-todo.dto';
 import { EditTodoDTO } from './dto/edit-todo.dto';
 import { Todo } from './todo.entity';
@@ -20,8 +19,11 @@ export class TodosController {
     return this.todosService.create(title, sprintTotal, sprintDone, todoDone);
   }
 
-  @Patch()
-  editOne(@Body() editTodoDto: EditTodoDTO): Promise<Todo> {
-    return this.todosService.editOne(editTodoDto);
+  @Patch(':id')
+  editOne(
+    @Body() editTodoDto: EditTodoDTO,
+    @Param('id') id: number,
+  ): Promise<Todo> {
+    return this.todosService.editOne({ id, ...editTodoDto });
   }
 }

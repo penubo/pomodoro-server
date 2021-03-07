@@ -35,12 +35,12 @@ describe('TodosController Test', () => {
     todosController = moduleRef.get<TodosController>(TodosController);
   });
 
-  afterEach(async () => {
-    await repository.query(`DELETE from todo;`);
-  });
-
   afterAll(async () => {
     await repository.manager.connection.close();
+  });
+
+  afterEach(async () => {
+    await repository.query(`DELETE from todo;`);
   });
 
   describe('findAll', () => {
@@ -71,10 +71,10 @@ describe('TodosController Test', () => {
         sprintTotal: 5,
         todoDone: false,
       });
-      const editedTodo = await todosController.editOne({
-        id: todo.id,
-        title: 'see you later',
-      });
+      const editedTodo = await todosController.editOne(
+        { title: 'see you later' },
+        todo.id,
+      );
       expect(editedTodo.title).toBe('see you later');
     });
   });
