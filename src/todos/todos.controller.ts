@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { UpdateResult } from 'typeorm';
 import { CreateTodoDTO } from './dto/create-todo.dto';
+import { EditTodoDTO } from './dto/edit-todo.dto';
 import { Todo } from './todo.entity';
 import { TodosService } from './todos.service';
 
@@ -16,5 +18,10 @@ export class TodosController {
   create(@Body() createTodoDto: CreateTodoDTO): Promise<Todo> {
     const { title, sprintTotal, sprintDone, todoDone } = createTodoDto;
     return this.todosService.create(title, sprintTotal, sprintDone, todoDone);
+  }
+
+  @Patch()
+  editOne(@Body() editTodoDto: EditTodoDTO): Promise<Todo> {
+    return this.todosService.editOne(editTodoDto);
   }
 }
