@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Todo } from './todo.entity';
 
 @Injectable()
@@ -31,6 +31,12 @@ export class TodosService {
       todoDone,
     });
     return this.todosRepository.save(newTodo);
+  }
+
+  async delete(id: number) {
+    const todo = this.todosRepository.findOne(id);
+    await this.todosRepository.delete(id);
+    return todo;
   }
 
   async editOne(patchTodo: Partial<Todo>): Promise<Todo> {

@@ -91,4 +91,18 @@ describe('TodosController Test', () => {
       expect(todo.title).toBe('hello world');
     });
   });
+
+  describe('delete', () => {
+    it('should delete a todo', async () => {
+      const todo = await todosController.create({
+        title: 'hello world',
+        sprintDone: 3,
+        sprintTotal: 5,
+        todoDone: false,
+      });
+      const deletedTodo = await todosController.delete(todo.id);
+      expect(await repository.findOne(todo.id)).toBeUndefined();
+      expect(deletedTodo.id).toBe(todo.id);
+    });
+  });
 });
