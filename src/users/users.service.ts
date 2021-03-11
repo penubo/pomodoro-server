@@ -9,4 +9,8 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
+
+  findOne(id: number) {
+    return this.usersRepository.findOne(id);
+  }
 }
