@@ -19,7 +19,7 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  findOAuthUserByProvider(providerId: string, provider: string) {
+  findOAuthUserByProvider(providerId: string, provider: string): Promise<User> {
     return this.usersRepository.findOne({ providerId, provider });
   }
 }
