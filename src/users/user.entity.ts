@@ -9,5 +9,17 @@ export class User {
   firstName: string;
 
   @Column()
-  lastName: number;
+  lastName: string;
+
+  @Column()
+  email: string;
+
+  @Column({ nullable: true })
+  photo: string;
+
+  @Column({ nullable: true })
+  providerId: string;
+
+  @Column({ nullable: true })
+  provider: string;
 }

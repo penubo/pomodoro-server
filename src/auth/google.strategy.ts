@@ -21,8 +21,10 @@ export class GoogleStrategy extends PassportStrategy(OAuth2Strategy) {
     profile: any,
     cb: VerifyFunction,
   ): Promise<any> {
-    const { name, emails, photos } = profile;
+    const { id, name, emails, photos } = profile;
+    await this.authService.validateOAuthUser(profile, 'google');
     const user = {
+      id,
       email: emails[0].value,
       firstName: name.givenName,
       lastName: name.familyName,

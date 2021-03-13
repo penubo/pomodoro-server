@@ -13,4 +13,13 @@ export class UsersService {
   findOne(id: number) {
     return this.usersRepository.findOne(id);
   }
+
+  registerOAuthUser(userData: Partial<User>) {
+    const user = this.usersRepository.create(userData);
+    return this.usersRepository.save(user);
+  }
+
+  findOAuthUserByProvider(providerId: string, provider: string) {
+    return this.usersRepository.findOne({ providerId, provider });
+  }
 }
