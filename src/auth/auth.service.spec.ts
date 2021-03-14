@@ -1,33 +1,40 @@
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
 import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let usersRepository: Repository<User>;
+  const mockUsersRepository = () => ({
+    createProduct: jest.fn(),
+    find: jest.fn(),
+    findOne: jest.fn(),
+    delete: jest.fn(),
+  });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        TypeOrmModule.forRoot({
-          type: 'mysql',
-          host: 'localhost',
-          port: 3306,
-          username: 'root',
-          password: process.env.DB_PASSWORD,
-          database: 'pomodoro_test',
-          entities: ['src/**/*.entity{.ts,.js}'],
-          synchronize: false,
-          keepConnectionAlive: true,
+        JwtModule.register({
+          secret: 'temp secret',
+          signOptions: { expiresIn: '60s' },
         }),
-        TypeOrmModule.forFeature([User]),
-        UsersModule,
       ],
-      providers: [AuthService],
+      providers: [
+        {
+          provide: getRepositoryToken(User),
+          useValue: mockUsersRepository,
+        },
+        AuthService,
+      ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
+    usersRepository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
   it('should be defined', () => {

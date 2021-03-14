@@ -72,7 +72,12 @@ describe('TodosController Test', () => {
         todoDone: false,
       });
       const editedTodo = await todosController.editOne(
-        { title: 'see you later' },
+        {
+          title: 'see you later',
+          sprintDone: 3,
+          sprintTotal: 5,
+          todoDone: false,
+        },
         todo.id,
       );
       expect(editedTodo.title).toBe('see you later');
