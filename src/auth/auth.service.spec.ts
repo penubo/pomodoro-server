@@ -1,22 +1,16 @@
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from '../users/users.service';
-import { Repository } from 'typeorm';
-import { User } from '../users/user.entity';
-import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
-import { GoogleStrategy } from './google.strategy';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let usersRepository: Repository<User>;
-  const mockUsersRepository = () => ({
-    createProduct: jest.fn(),
-    find: jest.fn(),
+  let jwtService: JwtService;
+  let usersService;
+  const mockUsersService = () => ({
+    findOAuthUserByProvider: jest.fn(),
+    registerOAuthUser: jest.fn(),
     findOne: jest.fn(),
-    delete: jest.fn(),
   });
 
   beforeEach(async () => {
@@ -29,19 +23,52 @@ describe('AuthService', () => {
       ],
       providers: [
         {
-          provide: getRepositoryToken(User),
-          useFactory: mockUsersRepository,
+          provide: UsersService,
+          useFactory: mockUsersService,
         },
-        UsersService,
         AuthService,
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    usersRepository = module.get<Repository<User>>(getRepositoryToken(User));
+    usersService = module.get<UsersService>(UsersService);
+    jwtService = module.get<JwtService>(JwtService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('should return jwt token of user when login success', async () => {
+    const idValue = 1;
+    const firstName = 'yongjoon';
+    const lastName = 'kim';
+    const providerId = '1234';
+    const provider = 'google';
+    usersService.findOAuthUserByProvider.mockResolvedValue({
+      id: idValue,
+      firstName: firstName,
+      lastName: lastName,
+      email: 'yongjoon@gmail.com',
+      photo: null,
+      providerId: providerId,
+      provider: provider,
+    });
+
+    const { access_token } = await service.loginByOAuth(providerId, provider);
+    const { username, id } = jwtService.decode(access_token) as {
+      username: string;
+      id: number;
+      iat: number;
+      exp: number;
+    };
+
+    expect(usersService.findOAuthUserByProvider).toHaveBeenCalledWith(
+      providerId,
+      provider,
+    );
+    expect(usersService.findOAuthUserByProvider).toHaveBeenCalledTimes(1);
+    expect(username).toBe(`${firstName}${lastName}`);
+    expect(id).toBe(idValue);
   });
 });
