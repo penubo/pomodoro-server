@@ -23,8 +23,14 @@ export class TodosController {
 
   @Post()
   create(@Body() createTodoDto: CreateTodoDTO): Promise<Todo> {
-    const { title, sprintTotal, sprintDone, todoDone } = createTodoDto;
-    return this.todosService.create(title, sprintTotal, sprintDone, todoDone);
+    const { title, sprintTotal, sprintDone, todoDone, userId } = createTodoDto;
+    return this.todosService.create(
+      title,
+      sprintTotal,
+      sprintDone,
+      todoDone,
+      userId,
+    );
   }
 
   @Delete(':id')

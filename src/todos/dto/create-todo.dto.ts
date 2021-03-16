@@ -3,4 +3,5 @@ export class CreateTodoDTO {
   sprintTotal: number;
   sprintDone: number;
   todoDone: boolean;
+  userId: number;
 }

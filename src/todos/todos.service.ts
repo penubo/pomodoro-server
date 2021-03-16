@@ -23,12 +23,16 @@ export class TodosService {
     sprintTotal: number,
     sprintDone: number,
     todoDone: boolean,
+    userId: number,
   ): Promise<Todo> {
     const newTodo = this.todosRepository.create({
       title,
       sprintTotal,
       sprintDone,
       todoDone,
+      user: {
+        id: userId,
+      },
     });
     return this.todosRepository.save(newTodo);
   }

@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../users/user.entity';
 import { Repository } from 'typeorm';
 import { Todo } from './todo.entity';
 import { TodosController } from './todos.controller';
@@ -21,10 +22,10 @@ describe('TodosController Test', () => {
           password: process.env.DB_PASSWORD,
           database: 'pomodoro_test',
           entities: ['src/**/*.entity{.ts,.js}'],
-          synchronize: false,
+          synchronize: true,
           keepConnectionAlive: true,
         }),
-        TypeOrmModule.forFeature([Todo]),
+        TypeOrmModule.forFeature([Todo, User]),
       ],
       controllers: [TodosController],
       providers: [TodosService],
@@ -45,6 +46,7 @@ describe('TodosController Test', () => {
 
   describe('findAll', () => {
     it('should return array of todos', async () => {
+      const user = new User();
       const result: Todo[] = [
         {
           id: 1,
@@ -52,6 +54,7 @@ describe('TodosController Test', () => {
           sprintTotal: 2,
           sprintDone: 1,
           todoDone: false,
+          user: user,
         },
       ];
 
@@ -65,11 +68,17 @@ describe('TodosController Test', () => {
 
   describe('patch', () => {
     it('should edit one of the todos', async () => {
+      const userData = new User();
+      userData.firstName = 'yongjoon';
+      userData.lastName = 'kim';
+      userData.email = 'yongjoon@gmail.com';
+      const user = await repository.manager.save(userData);
       const todo = await todosController.create({
         title: 'hello world',
         sprintDone: 3,
         sprintTotal: 5,
         todoDone: false,
+        userId: user.id,
       });
       const editedTodo = await todosController.editOne(
         {
@@ -86,11 +95,17 @@ describe('TodosController Test', () => {
 
   describe('create', () => {
     it('should create a todo', async () => {
+      const userData = new User();
+      userData.firstName = 'yongjoon';
+      userData.lastName = 'kim';
+      userData.email = 'yongjoon@gmail.com';
+      const user = await repository.manager.save(userData);
       const newTodo = await todosController.create({
         title: 'hello world',
         sprintDone: 3,
         sprintTotal: 5,
         todoDone: false,
+        userId: user.id,
       });
       const todo = await repository.findOne(newTodo.id);
       expect(todo.title).toBe('hello world');
@@ -99,11 +114,17 @@ describe('TodosController Test', () => {
 
   describe('delete', () => {
     it('should delete a todo', async () => {
+      const userData = new User();
+      userData.firstName = 'yongjoon';
+      userData.lastName = 'kim';
+      userData.email = 'yongjoon@gmail.com';
+      const user = await repository.manager.save(userData);
       const todo = await todosController.create({
         title: 'hello world',
         sprintDone: 3,
         sprintTotal: 5,
         todoDone: false,
+        userId: user.id,
       });
       const deletedTodo = await todosController.delete(todo.id);
       expect(await repository.findOne(todo.id)).toBeUndefined();
