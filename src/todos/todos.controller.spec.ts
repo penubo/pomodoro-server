@@ -25,7 +25,7 @@ describe('TodosController Test', () => {
           synchronize: true,
           keepConnectionAlive: true,
         }),
-        TypeOrmModule.forFeature([Todo, User]),
+        TypeOrmModule.forFeature([Todo]),
       ],
       controllers: [TodosController],
       providers: [TodosService],
