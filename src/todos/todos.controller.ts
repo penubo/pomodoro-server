@@ -21,6 +21,7 @@ export class TodosController {
     return this.todosService.findAll();
   }
 
+  // TODO: Change userId to request.user information with a proper guard
   @Post()
   create(@Body() createTodoDto: CreateTodoDTO): Promise<Todo> {
     const { title, sprintTotal, sprintDone, todoDone, userId } = createTodoDto;
