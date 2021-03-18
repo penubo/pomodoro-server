@@ -6,7 +6,9 @@ import {
   Post,
   Delete,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CreateTodoDTO } from './dto/create-todo.dto';
 import { EditTodoDTO } from './dto/edit-todo.dto';
 import { Todo } from './todo.entity';
@@ -16,6 +18,7 @@ import { TodosService } from './todos.service';
 export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll(): Promise<Todo[]> {
     return this.todosService.findAll();
