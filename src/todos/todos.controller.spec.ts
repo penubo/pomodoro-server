@@ -44,7 +44,7 @@ describe('TodosController Test', () => {
     await repository.query(`DELETE from todo;`);
   });
 
-  describe('findAll', () => {
+  describe.only('findAll', () => {
     it('should return array of todos', async () => {
       const user = new User();
       const result: Todo[] = [
@@ -62,7 +62,7 @@ describe('TodosController Test', () => {
         .spyOn(todosService, 'findAll')
         .mockImplementationOnce(async () => result);
 
-      expect(await todosController.findAll()).toBe(result);
+      expect(await todosController.findAll({})).toBe(result);
     });
   });
 
