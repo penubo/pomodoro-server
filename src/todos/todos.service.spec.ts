@@ -1,6 +1,5 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../users/user.entity';
 import { Repository } from 'typeorm';
 import { Todo } from './todo.entity';
 import { TodosService } from './todos.service';
@@ -29,7 +28,7 @@ describe('TodosService Test', () => {
     expect(todosService).toBeDefined();
   });
 
-  describe('findAll', () => {
+  describe('findAll Test', () => {
     it('should return array of todos', async () => {
       const result: Todo[] = [todoBuilder(), todoBuilder()];
 
@@ -39,6 +38,51 @@ describe('TodosService Test', () => {
 
       expect(await todosService.findAll()).toBe(result);
       expect(repositoryFindMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findOne Test', () => {
+    it('should return a todos', async () => {
+      const todo: Todo = todoBuilder();
+
+      const repositoryFindOneMock = jest
+        .spyOn(repository, 'findOne')
+        .mockImplementationOnce(async () => todo);
+
+      expect(await todosService.findOne(todo.id)).toBe(todo);
+      expect(repositoryFindOneMock).toHaveBeenCalledTimes(1);
+      expect(repositoryFindOneMock).toHaveBeenCalledWith(todo.id);
+    });
+  });
+
+  describe('create Test', () => {
+    it('should create a todos', async () => {
+      const todo: Todo = todoBuilder();
+
+      const repositoryCreateMock = jest
+        .spyOn(repository, 'create')
+        .mockReturnValueOnce(todo);
+      const repositorySaveMock = jest
+        .spyOn(repository, 'save')
+        .mockImplementationOnce(jest.fn());
+
+      await todosService.create(
+        todo.title,
+        todo.sprintTotal,
+        todo.sprintDone,
+        todo.todoDone,
+        todo.user.id,
+      );
+      expect(repositoryCreateMock).toHaveBeenCalledTimes(1);
+      expect(repositorySaveMock).toHaveBeenCalledTimes(1);
+      expect(repositoryCreateMock).toHaveBeenCalledWith({
+        sprintDone: todo.sprintDone,
+        sprintTotal: todo.sprintTotal,
+        title: todo.title,
+        todoDone: todo.todoDone,
+        user: { id: todo.user.id },
+      });
+      expect(repositorySaveMock).toHaveBeenCalledWith(todo);
     });
   });
 });
