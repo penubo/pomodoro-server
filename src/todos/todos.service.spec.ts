@@ -4,6 +4,7 @@ import { User } from '../users/user.entity';
 import { Repository } from 'typeorm';
 import { Todo } from './todo.entity';
 import { TodosService } from './todos.service';
+import { todoBuilder } from './fixture/todo.builder';
 
 describe('TodosService Test', () => {
   let todosService: TodosService;
@@ -30,17 +31,7 @@ describe('TodosService Test', () => {
 
   describe('findAll', () => {
     it('should return array of todos', async () => {
-      const user = new User();
-      const result: Todo[] = [
-        {
-          id: 1,
-          title: 'title',
-          sprintTotal: 2,
-          sprintDone: 1,
-          todoDone: false,
-          user: user,
-        },
-      ];
+      const result: Todo[] = [todoBuilder(), todoBuilder()];
 
       const repositoryFindMock = jest
         .spyOn(repository, 'find')
