@@ -3,8 +3,13 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Todo } from './todo.entity';
 import { TodosService } from './todos.service';
-import { todoBuilder, createTodoDTOBuilder } from './fixture/todo.builder';
+import {
+  todoBuilder,
+  createTodoDTOBuilder,
+  editTodoDtoBuilder,
+} from './fixture/todo.builder';
 import { CreateTodoDTO } from './dto/create-todo.dto';
+import { EditTodoDTO } from './dto/edit-todo.dto';
 
 describe('TodosService Test', () => {
   let todosService: TodosService;
@@ -23,6 +28,10 @@ describe('TodosService Test', () => {
 
     todosService = moduleRef.get<TodosService>(TodosService);
     repository = moduleRef.get<Repository<Todo>>(getRepositoryToken(Todo));
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -67,6 +76,32 @@ describe('TodosService Test', () => {
       await todosService.create(createTodoDTO);
       expect(repositorySaveMock).toHaveBeenCalledTimes(1);
       expect(repositorySaveMock).toHaveBeenCalledWith(createTodoDTO);
+    });
+  });
+
+  describe('editOne Test', () => {
+    it('should edit a todo', async () => {
+      const todo: Todo = todoBuilder();
+      const editTodoDto: EditTodoDTO = editTodoDtoBuilder();
+      const updatedTodo: Todo = { ...todo, ...editTodoDto };
+
+      const repositoryUpdateMock = jest
+        .spyOn(repository, 'update')
+        .mockImplementationOnce(jest.fn());
+      const repositoryFindOneMock = jest
+        .spyOn(repository, 'findOne')
+        .mockImplementationOnce(async () => updatedTodo);
+
+      expect(await todosService.editOne(todo.id, editTodoDto)).toBe(
+        updatedTodo,
+      );
+      expect(repositoryUpdateMock).toHaveBeenCalledTimes(1);
+      expect(repositoryUpdateMock).toHaveBeenCalledWith(
+        { id: todo.id },
+        editTodoDto,
+      );
+      expect(repositoryFindOneMock).toHaveBeenCalledTimes(1);
+      expect(repositoryFindOneMock).toHaveBeenCalledWith(todo.id);
     });
   });
 });
