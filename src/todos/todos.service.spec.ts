@@ -3,7 +3,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Todo } from './todo.entity';
 import { TodosService } from './todos.service';
-import { todoBuilder } from './fixture/todo.builder';
+import { todoBuilder, createTodoDTOBuilder } from './fixture/todo.builder';
+import { CreateTodoDTO } from './dto/create-todo.dto';
 
 describe('TodosService Test', () => {
   let todosService: TodosService;
@@ -57,32 +58,15 @@ describe('TodosService Test', () => {
 
   describe('create Test', () => {
     it('should create a todos', async () => {
-      const todo: Todo = todoBuilder();
+      const createTodoDTO: CreateTodoDTO = createTodoDTOBuilder();
 
-      const repositoryCreateMock = jest
-        .spyOn(repository, 'create')
-        .mockReturnValueOnce(todo);
       const repositorySaveMock = jest
         .spyOn(repository, 'save')
         .mockImplementationOnce(jest.fn());
 
-      await todosService.create(
-        todo.title,
-        todo.sprintTotal,
-        todo.sprintDone,
-        todo.todoDone,
-        todo.user.id,
-      );
-      expect(repositoryCreateMock).toHaveBeenCalledTimes(1);
+      await todosService.create(createTodoDTO);
       expect(repositorySaveMock).toHaveBeenCalledTimes(1);
-      expect(repositoryCreateMock).toHaveBeenCalledWith({
-        sprintDone: todo.sprintDone,
-        sprintTotal: todo.sprintTotal,
-        title: todo.title,
-        todoDone: todo.todoDone,
-        user: { id: todo.user.id },
-      });
-      expect(repositorySaveMock).toHaveBeenCalledWith(todo);
+      expect(repositorySaveMock).toHaveBeenCalledWith(createTodoDTO);
     });
   });
 });

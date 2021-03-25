@@ -1,6 +1,7 @@
 import { User } from '../../users/user.entity';
 import { Todo } from '../todo.entity';
 import { build, fake, sequence } from '@jackfranklin/test-data-bot';
+import { CreateTodoDTO } from '../dto/create-todo.dto';
 
 const userBuilder = build<User>('User', {
   fields: {
@@ -26,4 +27,13 @@ const todoBuilder = build<Todo>('Todo', {
   },
 });
 
-export { todoBuilder };
+const createTodoDTOBuilder = build<CreateTodoDTO>('CreateTodoDTO', {
+  fields: {
+    title: fake((f) => f.name.title()),
+    sprintTotal: fake((f) => f.random.number()),
+    sprintDone: fake((f) => f.random.number()),
+    todoDone: fake((f) => f.random.boolean()),
+  },
+});
+
+export { todoBuilder, createTodoDTOBuilder };

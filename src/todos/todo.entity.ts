@@ -18,6 +18,6 @@ export class Todo {
   @Column()
   todoDone: boolean;
 
-  @ManyToOne(() => User, (user) => user.todos, { nullable: false })
-  user!: User;
+  @ManyToOne(() => User, (user) => user.todos, { nullable: true })
+  user: User;
 }
