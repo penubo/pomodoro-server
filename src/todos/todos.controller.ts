@@ -42,6 +42,6 @@ export class TodosController {
     @Body() editTodoDto: EditTodoDTO,
     @Param('id') id: number,
   ): Promise<Todo> {
-    return this.todosService.editOne({ id, ...editTodoDto });
+    return this.todosService.editOne(id, editTodoDto);
   }
 }

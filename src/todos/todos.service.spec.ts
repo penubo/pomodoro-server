@@ -89,7 +89,7 @@ describe('TodosService Test', () => {
         .spyOn(repository, 'update')
         .mockImplementationOnce(jest.fn());
       const repositoryFindOneMock = jest
-        .spyOn(repository, 'findOne')
+        .spyOn(repository, 'findOneOrFail')
         .mockImplementationOnce(async () => updatedTodo);
 
       expect(await todosService.editOne(todo.id, editTodoDto)).toBe(

@@ -32,7 +32,7 @@ export class TodosService {
 
   async editOne(todoId: number, editTodoDto: EditTodoDTO): Promise<Todo> {
     await this.todosRepository.update({ id: todoId }, editTodoDto);
-    return this.todosRepository.findOne(todoId);
+    return this.todosRepository.findOneOrFail(todoId);
   }
 
   async remove(id: string): Promise<void> {
