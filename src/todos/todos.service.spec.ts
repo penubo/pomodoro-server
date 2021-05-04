@@ -104,4 +104,24 @@ describe('TodosService Test', () => {
       expect(repositoryFindOneMock).toHaveBeenCalledWith(todo.id);
     });
   });
+
+  describe('delete Test', () => {
+    it('should delete a todo', async () => {
+      const todo: Todo = todoBuilder();
+
+      const repositoryFindOneMock = jest
+        .spyOn(repository, 'findOne')
+        .mockImplementationOnce(async () => todo);
+
+      const repositoryDeleteMock = jest
+        .spyOn(repository, 'delete')
+        .mockImplementationOnce(jest.fn());
+
+      expect(await todosService.delete(todo.id)).toBe(todo);
+      expect(repositoryFindOneMock).toHaveBeenCalledTimes(1);
+      expect(repositoryFindOneMock).toHaveBeenCalledWith(todo.id);
+      expect(repositoryDeleteMock).toHaveBeenCalledTimes(1);
+      expect(repositoryDeleteMock).toHaveBeenCalledWith(todo.id);
+    });
+  });
 });

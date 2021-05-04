@@ -34,8 +34,4 @@ export class TodosService {
     await this.todosRepository.update({ id: todoId }, editTodoDto);
     return this.todosRepository.findOneOrFail(todoId);
   }
-
-  async remove(id: string): Promise<void> {
-    await this.todosRepository.delete(id);
-  }
 }
