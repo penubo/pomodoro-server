@@ -17,6 +17,10 @@ class TodosServiceMock {
     return [];
   }
 
+  async findOne() {
+    return [];
+  }
+
   async create() {
     return {};
   }
@@ -67,6 +71,19 @@ describe('TodosController Test', () => {
         .mockImplementationOnce(async () => [todo1, todo2]);
 
       expect(await todosController.findAll()).toEqual([todo1, todo2]);
+      expect(serviceFindAllMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findOne Test', () => {
+    it('should return todo list', async () => {
+      const todo = todoBuilder();
+
+      const serviceFindAllMock = jest
+        .spyOn(todosService, 'findOne')
+        .mockImplementationOnce(async () => todo);
+
+      expect(await todosController.findOne(todo.id)).toEqual(todo);
       expect(serviceFindAllMock).toHaveBeenCalledTimes(1);
     });
   });

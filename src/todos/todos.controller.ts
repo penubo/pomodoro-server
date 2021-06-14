@@ -5,7 +5,7 @@ import {
   Param,
   Post,
   Delete,
-  Put,
+  Patch,
 } from '@nestjs/common';
 import { CreateTodoDTO } from './dto/create-todo.dto';
 import { EditTodoDTO } from './dto/edit-todo.dto';
@@ -21,6 +21,11 @@ export class TodosController {
     return this.todosService.findAll();
   }
 
+  @Get(':id')
+  findOne(@Param('id') id: number): Promise<Todo> {
+    return this.todosService.findOne(id);
+  }
+
   @Post()
   create(@Body() createTodoDto: CreateTodoDTO): Promise<Todo> {
     return this.todosService.create(createTodoDto);
@@ -31,7 +36,7 @@ export class TodosController {
     return this.todosService.delete(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   editOne(
     @Body() editTodoDto: EditTodoDTO,
     @Param('id') id: number,

@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pomodoro:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  backend:
+    image: pomodoro:server
+    environment:
+      HOST: db
+    ports:
+      - 3000:3000
+        
+volumes:
+  pomodoro: {}
