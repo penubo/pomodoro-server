@@ -12,6 +12,7 @@ services:
       - 5432:5432
 
   backend:
+    build: .
     image: pomodoro:server
     environment:
       HOST: db
